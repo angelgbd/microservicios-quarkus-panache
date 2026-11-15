@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: ms-pedidos-db
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: productos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init/01-create-ordenes.sql:/docker-entrypoint-initdb.d/01-create-ordenes.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d productos_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
